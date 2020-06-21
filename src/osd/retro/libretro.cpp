@@ -191,7 +191,7 @@ static void check_variables(void)
               log_cb(RETRO_LOG_INFO, "[PJT] Machine isn't NULL\n");
         if (log_cb)
               log_cb(RETRO_LOG_INFO, "Name=%s\n", mame_machine_manager::instance()->machine()->firstcpu->name());
-      mame_machine_manager::instance()->machine()->firstcpu->set_clock_scale((float)50 * 0.001f);
+      mame_machine_manager::instance()->machine()->firstcpu->set_clock_scale((float)370 * 0.001f);
       //machine.firstcpu->set_clock_scale((float)50 * 0.001f);
        //machine.firstcpu->set_clock_scale((float)1.0f);
       log_cb(RETRO_LOG_INFO, "[PJT] Clock=%d\n", mame_machine_manager::instance()->machine()->firstcpu->clock());

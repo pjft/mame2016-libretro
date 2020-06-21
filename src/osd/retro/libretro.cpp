@@ -184,25 +184,38 @@ void retro_set_environment(retro_environment_t cb)
    cb(RETRO_ENVIRONMENT_SET_VARIABLES, (void*)vars);
 }
 
-static void check_variables(void)
+static void update_runtime_variables(void)
 {
   if (log_cb)
-    log_cb(RETRO_LOG_INFO, "[PJT] CHECKING VARIABLES\n");
+    log_cb(RETRO_LOG_INFO, "[PJT] UPDATING RUNTIME VARIABLES\n");
   
-   if ( false && mame_machine_manager::instance() != NULL && mame_machine_manager::instance()->machine() != NULL && mame_machine_manager::instance()->machine()->firstcpu != NULL) {
-        if (log_cb)
-              log_cb(RETRO_LOG_INFO, "[PJT] Machine isn't NULL\n");
-        if (log_cb)
-              log_cb(RETRO_LOG_INFO, "Name=%s\n", mame_machine_manager::instance()->machine()->firstcpu->name());
-      mame_machine_manager::instance()->machine()->firstcpu->set_clock_scale((float)370 * 0.001f);
-      //machine.firstcpu->set_clock_scale((float)50 * 0.001f);
-       //machine.firstcpu->set_clock_scale((float)1.0f);
+  if (log_cb)
+      log_cb(RETRO_LOG_INFO, "Overclock string set to: %s\n",cpu_overclock);
+
+  int overclock = 100;
+  if (strcmp(cpu_overclock, "default")) {
+    overclock = atoi(cpu_overclock);
+  }
+
+  if (log_cb)
+      log_cb(RETRO_LOG_INFO, "Overclock integer set to: %d\n",overclock);
+  
+  if (mame_machine_manager::instance() != NULL && mame_machine_manager::instance()->machine() != NULL && mame_machine_manager::instance()->machine()->firstcpu != NULL) {
+    if (log_cb) {
+      log_cb(RETRO_LOG_INFO, "[PJT] Machine isn't NULL\n");
+      log_cb(RETRO_LOG_INFO, "Name=%s\n", mame_machine_manager::instance()->machine()->firstcpu->name());
+    }
+    mame_machine_manager::instance()->machine()->firstcpu->set_clock_scale((float)overclock * 0.01f);
+    if (log_cb) {
       log_cb(RETRO_LOG_INFO, "[PJT] Clock=%d\n", mame_machine_manager::instance()->machine()->firstcpu->clock());
       log_cb(RETRO_LOG_INFO, "[PJT] Config Clock=%d\n", mame_machine_manager::instance()->machine()->firstcpu->configured_clock());
-       
-       if (log_cb)
-              log_cb(RETRO_LOG_INFO, "[PJT] Set clock to 50%\n");
-   }
+      log_cb(RETRO_LOG_INFO, "[PJT] Set clock to %d\n", overclock);
+    }
+  }
+}
+
+static void check_variables(void)
+{
    struct retro_variable var = {0};
 
    var.key   = option_cli;
@@ -269,7 +282,7 @@ static void check_variables(void)
    {
       sprintf(cpu_overclock,"%s",var.value);
       if (log_cb)
-        log_cb(RETRO_LOG_INFO, "[PJT] CPU Overclock set to %s\n", cpu_overclock);
+        log_cb(RETRO_LOG_INFO, "[PJT] CPU Overclock OPTION set to %s\n", cpu_overclock);
    }
    
    //// PJT END
@@ -553,8 +566,10 @@ void retro_run (void)
    static int mfirst=1;
    bool updated = false;
 
-   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated)
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE_UPDATE, &updated) && updated) {
       check_variables();
+      update_runtime_variables();
+   }
 
    if(mfirst==1)
    {
@@ -562,6 +577,7 @@ void retro_run (void)
       mmain(1,RPATH);
       printf("MAIN FIRST\n");
       retro_load_ok=true;
+      update_runtime_variables();
       return;
    }
 

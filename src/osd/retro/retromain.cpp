@@ -1222,8 +1222,8 @@ static void Set_Default_Option(void)
       log_cb(RETRO_LOG_INFO, "[PJT] CPU OVERCLOCK - DEFAULT\n", cpu_overclock);
    else {
       log_cb(RETRO_LOG_INFO, "[PJT] CPU OVERCLOCK SET TO: %s\n", cpu_overclock);
-      Add_Option("-cpu_overclock");
-      Add_Option(cpu_overclock);
+      //Add_Option("-cpu_overclock");
+      //Add_Option(cpu_overclock);
    }
    
    /// PJT

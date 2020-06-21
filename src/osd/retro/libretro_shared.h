@@ -51,6 +51,7 @@ extern int mouseBUT[4];
 
 extern UINT16 retrokbd_state[RETROK_LAST];
 
+extern char cpu_overclock[10];
 extern char mediaType[10];
 
 extern bool nobuffer_enable;

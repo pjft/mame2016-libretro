@@ -37,6 +37,7 @@ char RPATH[512];
 
 static char option_mouse[50];
 static char option_cheats[50];
+static char option_overclock[50];
 static char option_nag[50];
 static char option_info[50];
 static char option_renderer[50];
@@ -134,6 +135,7 @@ void retro_set_environment(retro_environment_t cb)
     log_cb(RETRO_LOG_INFO, "[PJT] SETTING ENVIRONMENT\n");
    sprintf(option_mouse, "%s_%s", core, "mouse_enable");
    sprintf(option_cheats, "%s_%s", core, "cheats_enable");
+   sprintf(option_overclock, "%s_%s", core, "cpu_overclock");
    sprintf(option_nag, "%s_%s",core,"hide_nagscreen");
    sprintf(option_info, "%s_%s",core,"hide_infoscreen");
    sprintf(option_warnings,"%s_%s",core,"hide_warnings");
@@ -163,6 +165,7 @@ void retro_set_environment(retro_environment_t cb)
     { option_mouse, "Enable in-game mouse; disabled|enabled" },
     { option_throttle, "Enable throttle; disabled|enabled" },
     { option_cheats, "Enable cheats; disabled|enabled" },
+    { option_overclock, "Main CPU Overclock; default|30|31|32|33|34|35|36|37|38|39|40|41|42|43|44|45|46|47|48|49|50|51|52|53|54|55|60|65|70|75|80|85|90|95|100|105|110|115|120|125|130|135|140|145|150" },
     { option_renderer, "Alternate render method; disabled|enabled" },
 
     { option_softlist, "Enable softlists; enabled|disabled" },
@@ -186,7 +189,7 @@ static void check_variables(void)
   if (log_cb)
     log_cb(RETRO_LOG_INFO, "[PJT] CHECKING VARIABLES\n");
   
-   if ( mame_machine_manager::instance() != NULL && mame_machine_manager::instance()->machine() != NULL && mame_machine_manager::instance()->machine()->firstcpu != NULL) {
+   if ( false && mame_machine_manager::instance() != NULL && mame_machine_manager::instance()->machine() != NULL && mame_machine_manager::instance()->machine()->firstcpu != NULL) {
         if (log_cb)
               log_cb(RETRO_LOG_INFO, "[PJT] Machine isn't NULL\n");
         if (log_cb)
@@ -256,6 +259,20 @@ static void check_variables(void)
       if (!strcmp(var.value, "enabled"))
          cheats_enable = true;
    }
+
+   //// PJT
+
+   var.key   = option_overclock;
+   var.value = NULL;
+
+   if (environ_cb(RETRO_ENVIRONMENT_GET_VARIABLE, &var) && var.value)
+   {
+      sprintf(cpu_overclock,"%s",var.value);
+      if (log_cb)
+        log_cb(RETRO_LOG_INFO, "[PJT] CPU Overclock set to %s\n", cpu_overclock);
+   }
+   
+   //// PJT END
 
    var.key   = option_nag;
    var.value = NULL;

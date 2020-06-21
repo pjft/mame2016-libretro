@@ -89,6 +89,9 @@ bool nobuffer_enable = false;
 bool hide_gameinfo = false;
 bool mouse_enable = false;
 bool cheats_enable = false;
+/// PJT
+char cpu_overclock[10];
+/// PJT END
 bool alternate_renderer = false;
 bool boot_to_osd_enable = false;
 bool boot_to_bios_enable = false;
@@ -1213,6 +1216,18 @@ static void Set_Default_Option(void)
    else
       Add_Option("-nocheat");
 
+
+   /// PJT
+   if (!strcmp(cpu_overclock, "default"))
+      log_cb(RETRO_LOG_INFO, "[PJT] CPU OVERCLOCK - DEFAULT\n", cpu_overclock);
+   else {
+      log_cb(RETRO_LOG_INFO, "[PJT] CPU OVERCLOCK SET TO: %s\n", cpu_overclock);
+      Add_Option("-cpu_overclock");
+      Add_Option(cpu_overclock);
+   }
+   
+   /// PJT
+
    if(mouse_enable)
       Add_Option("-mouse");
    else
@@ -1668,13 +1683,13 @@ int mmain(int argc, const char *argv)
       return result;
 
    if (log_cb)
-      log_cb(RETRO_LOG_DEBUG, "Parameters:\n");
+      log_cb(RETRO_LOG_INFO, "Parameters:\n");
 
    for (i = 0; i < PARAMCOUNT; i++)
    {
       xargv_cmd[i] = (char*)(XARGV[i]);
       if (log_cb)
-         log_cb(RETRO_LOG_DEBUG, " %s\n",XARGV[i]);
+         log_cb(RETRO_LOG_INFO, " %s\n",XARGV[i]);
    }
 
   retro_global_osd= global_alloc(retro_osd_interface(retro_global_options));

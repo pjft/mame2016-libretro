@@ -1191,7 +1191,8 @@ static void Add_Option(const char* option)
 static void Set_Default_Option(void)
 {
    /* some hardcoded default options. */
-
+   if (log_cb)
+    log_cb(RETRO_LOG_INFO, "[PJT] SETTING DEFAULT OPTIONS\n");
    Add_Option(core);
 
    if(throttle_enable)
@@ -1280,6 +1281,8 @@ static void Set_Path_Option(void)
 
 static int execute_game(char* path)
 {
+   if (log_cb)
+    log_cb(RETRO_LOG_INFO, "[PJT] EXECUTE GAME\n");
    unsigned i;
    char tmp_dir[256];
    int gameRot=0;
@@ -1618,6 +1621,8 @@ retro_osd_interface *retro_global_osd;
 
 int mmain(int argc, const char *argv)
 {
+   if (log_cb)
+    log_cb(RETRO_LOG_INFO, "[PJT] IN MMAIN\n");
    unsigned i=0;
    //osd_options options;
    //cli_options MRoptions;
@@ -1657,7 +1662,8 @@ int mmain(int argc, const char *argv)
          log_cb(RETRO_LOG_INFO, "Starting game:%s\n",gameName);
       result = execute_game(gameName);
    }
-
+   if (log_cb)
+    log_cb(RETRO_LOG_INFO, "[PJT] GAME STARTED, RESULT %d\n", result);
    if (result < 0)
       return result;
 
@@ -1679,8 +1685,11 @@ int mmain(int argc, const char *argv)
 
   // cli_frontend frontend(options, osd);
    //result =  emulator_info::start_frontend(options, osd,PARAMCOUNT, ( char **)xargv_cmd);
+  if (log_cb)
+    log_cb(RETRO_LOG_INFO, "[PJT] STARTING FRONTEND\n");
   result =  emulator_info::start_frontend(retro_global_options, *retro_global_osd,PARAMCOUNT, ( char **)xargv_cmd);
-
+  if (log_cb)
+    log_cb(RETRO_LOG_INFO, "[PJT] FRONTEND STARTED\n");
    xargv_cmd[PARAMCOUNT - 2] = NULL;
 
    return 1;
@@ -1786,6 +1795,7 @@ void retro_osd_interface::init(running_machine &machine)
 		log_cb(RETRO_LOG_DEBUG, "Screen width=%d height=%d, aspect=%f\n", fb_width, fb_height,  retro_aspect);
 
 	//NEWGAME_FROM_OSD=1;
+   log_cb(RETRO_LOG_INFO, "HIT ME\n");
 
 	if (log_cb)
 		log_cb(RETRO_LOG_INFO, "OSD initialization complete\n");

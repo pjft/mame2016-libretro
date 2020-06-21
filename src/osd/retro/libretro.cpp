@@ -130,6 +130,8 @@ void retro_set_audio_sample(retro_audio_sample_t cb) { }
 
 void retro_set_environment(retro_environment_t cb)
 {
+  if (log_cb)
+    log_cb(RETRO_LOG_INFO, "[PJT] SETTING ENVIRONMENT\n");
    sprintf(option_mouse, "%s_%s", core, "mouse_enable");
    sprintf(option_cheats, "%s_%s", core, "cheats_enable");
    sprintf(option_nag, "%s_%s",core,"hide_nagscreen");
@@ -181,6 +183,23 @@ void retro_set_environment(retro_environment_t cb)
 
 static void check_variables(void)
 {
+  if (log_cb)
+    log_cb(RETRO_LOG_INFO, "[PJT] CHECKING VARIABLES\n");
+  
+   if ( mame_machine_manager::instance() != NULL && mame_machine_manager::instance()->machine() != NULL && mame_machine_manager::instance()->machine()->firstcpu != NULL) {
+        if (log_cb)
+              log_cb(RETRO_LOG_INFO, "[PJT] Machine isn't NULL\n");
+        if (log_cb)
+              log_cb(RETRO_LOG_INFO, "Name=%s\n", mame_machine_manager::instance()->machine()->firstcpu->name());
+      mame_machine_manager::instance()->machine()->firstcpu->set_clock_scale((float)50 * 0.001f);
+      //machine.firstcpu->set_clock_scale((float)50 * 0.001f);
+       //machine.firstcpu->set_clock_scale((float)1.0f);
+      log_cb(RETRO_LOG_INFO, "[PJT] Clock=%d\n", mame_machine_manager::instance()->machine()->firstcpu->clock());
+      log_cb(RETRO_LOG_INFO, "[PJT] Config Clock=%d\n", mame_machine_manager::instance()->machine()->firstcpu->configured_clock());
+       
+       if (log_cb)
+              log_cb(RETRO_LOG_INFO, "[PJT] Set clock to 50%\n");
+   }
    struct retro_variable var = {0};
 
    var.key   = option_cli;
